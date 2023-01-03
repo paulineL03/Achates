@@ -24,16 +24,18 @@ public class home extends Fragment {
 
 
         View v = inflater.inflate(R.layout.fragment_home,container,false);
+        /*
         Button button=(Button)v.findViewById(R.id.gbutton);
 
         OnClickListener listnr=new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(), menu.class);
+                Intent intent=new Intent(getActivity(), faceDetection.class);
                 startActivity(intent);
             }
         };
-        button.setOnClickListener(listnr);
+        button.setOnClickListener(listnr);*/
+
         return v;
 
     }
