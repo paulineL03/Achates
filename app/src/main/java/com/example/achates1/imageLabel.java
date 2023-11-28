@@ -3,16 +3,19 @@ package com.example.achates1;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageHelper;
+//import androidx.appcompat.widget.AppCompatImageHelper;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -27,21 +30,26 @@ import com.google.mlkit.vision.label.ImageLabeler;
 import com.google.mlkit.vision.label.ImageLabeling;
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-public class faceDetection extends AppCompatActivity {
-private int REQUEST_PICK_IMAGE=1000;
+public class imageLabel extends AppCompatActivity {
+    private int REQUEST_CAPTURE_IMAGE = 1034;
+    private int REQUEST_PICK_IMAGE=1000;
 
 
     private ImageView imageBox;
     private TextView output;
     private ImageLabeler imageLabeler;
 
+    private File photoPhilee;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.facedetection);
+        setContentView(R.layout.imagelabel);
         imageBox=findViewById(R.id.imageBox);
         output=findViewById(R.id.output);
         imageLabeler= ImageLabeling.getClient(new ImageLabelerOptions.Builder()
@@ -60,7 +68,7 @@ private int REQUEST_PICK_IMAGE=1000;
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        Log.d(faceDetection.class.getSimpleName(), "grant result for " +permissions[0] + " is " + grantResults[0]);
+        Log.d(imageLabel.class.getSimpleName(), "grant result for " +permissions[0] + " is " + grantResults[0]);
     }
 
     public void onPickImage(View view){
@@ -70,7 +78,24 @@ private int REQUEST_PICK_IMAGE=1000;
         startActivityForResult(i, REQUEST_PICK_IMAGE);
     }
     public void onStartCamera(View view){
+        photoPhilee= photoPhile();
 
+        Uri uriF = FileProvider.getUriForFile(this, "com.example.fileget", photoPhilee);
+        Intent intent= new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriF);
+
+        startActivityForResult(intent, REQUEST_CAPTURE_IMAGE);
+    }
+
+    private File photoPhile(){
+        File picDir= new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ML_IMAGE_HELPER" );
+
+        if (!picDir.exists()){
+            picDir.mkdirs();
+        }
+        String nam= new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File file= new File(picDir.getPath() + File.separator + nam);
+        return file;
     }
 
     @Override
@@ -81,6 +106,12 @@ private int REQUEST_PICK_IMAGE=1000;
             if (requestCode== REQUEST_PICK_IMAGE){
                 Uri uri= data.getData();
                 Bitmap bitmap=loadUri(uri);
+                imageBox.setImageBitmap(bitmap);
+                classifyImage(bitmap);
+            }
+            else if (requestCode==REQUEST_CAPTURE_IMAGE){
+                Log.d("ML", "use camera");
+                Bitmap bitmap= BitmapFactory.decodeFile(photoPhilee.getAbsolutePath());
                 imageBox.setImageBitmap(bitmap);
                 classifyImage(bitmap);
             }
@@ -110,7 +141,7 @@ private int REQUEST_PICK_IMAGE=1000;
                 if(imageLabels.size()>0){
                     StringBuilder builder= new StringBuilder();
                     for(ImageLabel label : imageLabels){
-                        builder.append(label.getText()).append(".").append(label.getConfidence()).append("\n");
+                        builder.append(label.getText()).append(": ").append(label.getConfidence()*100).append("%").append("\n");
                     }
                     output.setText(builder.toString());
                 }else{

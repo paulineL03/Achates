@@ -12,7 +12,7 @@
       android:layout_height="wrap_content"
       android:layout_marginBottom="100dp"
       android:background="@color/teal_700"
-      android:hint="Enter Command.."
+      android:hint="what do you want to say?"
       android:inputType="text"
       android:padding="20dp"
       android:textColor="@color/white"
@@ -45,4 +45,15 @@
       tools:ignore="MissingConstraints" />
      <!--app:layout_constrainedWidth_max="300dp"-->
 
+  <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="48dp"
+      android:id="@+id/mic"
+      android:text="hold"
+      android:textColor="@color/white"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.498"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/homeAchates" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,7 @@ import android.view.*;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 
 public class menuNav extends Fragment {
 
@@ -24,16 +25,36 @@ public class menuNav extends Fragment {
 
 
         View v = inflater.inflate(R.layout.fragment_menu_nav,container,false);
-        Button button=(Button)v.findViewById(R.id.faceRecoBut);
+        ImageView button=(android.widget.ImageView) v.findViewById(R.id.imageLabelBut);
+        ImageView button2= (android.widget.ImageView) v.findViewById(R.id.homeAuto);
+        ImageView button3= (android.widget.ImageView) v.findViewById(R.id.homeSecu);
 
         OnClickListener listnr=new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(), faceDetection.class);
+                Intent intent=new Intent(getActivity(), imageLabel.class);
                 startActivity(intent);
             }
         };
         button.setOnClickListener(listnr);
+
+        OnClickListener listnr2=new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), homeAutomation.class);
+                startActivity(intent);
+            }
+        };
+        button2.setOnClickListener(listnr2);
+
+        OnClickListener listnr3=new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), homeSecu.class);
+                startActivity(intent);
+            }
+        };
+        button3.setOnClickListener(listnr3);
         return v;
     }
 
